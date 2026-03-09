@@ -3,8 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React from 'react';
-import { motion } from 'motion/react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { 
   Mic, 
   Cpu, 
@@ -19,7 +19,10 @@ import {
   Smartphone,
   Layers,
   ChevronRight,
-  Megaphone
+  Megaphone,
+  X,
+  Copy,
+  Check
 } from 'lucide-react';
 
 const SectionHeader = ({ title, subtitle, number }: { title: string, subtitle?: string, number: string }) => (
@@ -112,8 +115,88 @@ const DemoItem = ({ title, author, description, icon: Icon }: { title: string, a
 );
 
 export default function App() {
+  const [showContactModal, setShowContactModal] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText('bob_fu');
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
+      <AnimatePresence>
+        {showContactModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowContactModal(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-[2.5rem] p-10 text-center overflow-hidden"
+            >
+              <div className="absolute -top-10 -right-10 p-12 opacity-5">
+                <Users size={160} />
+              </div>
+              
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="absolute top-6 right-6 text-zinc-500 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+
+              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <MessageSquare className="text-white" size={32} />
+              </div>
+
+              <h3 className="text-2xl font-bold text-white mb-2">加入超音速计划</h3>
+              <p className="text-zinc-400 text-sm mb-8">
+                请添加鲍勃微信了解详情，开启你的 Physical AI 创业之旅。
+              </p>
+
+              <button 
+                onClick={handleCopy}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 group hover:bg-white/10 transition-all relative overflow-hidden"
+              >
+                <p className="text-zinc-500 text-[10px] uppercase tracking-widest font-bold mb-2">点击复制微信号</p>
+                <div className="flex items-center justify-center gap-3">
+                  <p className="text-2xl font-mono font-bold text-white tracking-tight">bob_fu</p>
+                  {copied ? (
+                    <Check size={20} className="text-emerald-400" />
+                  ) : (
+                    <Copy size={20} className="text-zinc-500 group-hover:text-white transition-colors" />
+                  )}
+                </div>
+                {copied && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute inset-0 bg-emerald-500/10 flex items-center justify-center backdrop-blur-sm"
+                  >
+                    <span className="text-emerald-400 font-bold text-xs uppercase tracking-widest">已复制到剪贴板</span>
+                  </motion.div>
+                )}
+              </button>
+
+              <button 
+                onClick={() => setShowContactModal(false)}
+                className="w-full py-4 bg-white text-zinc-900 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-zinc-200 transition-all"
+              >
+                我知道了
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
       <header className="relative min-h-screen flex flex-col justify-center px-6 py-20 overflow-hidden bg-zinc-950">
         <div className="absolute inset-0">
@@ -176,7 +259,10 @@ export default function App() {
               <div className="relative z-10">
                 <h3 className="text-3xl font-black mb-4 leading-tight">Physical AI Camp·<br />超音速计划 2026</h3>
                 <p className="text-zinc-400 text-sm mb-8 max-w-md">活动现场同时启动了旨在扶持硬件 AI 创业团队的专项计划。</p>
-                <button className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest bg-white text-zinc-900 px-6 py-3 rounded-full hover:bg-zinc-200 transition-all">
+                <button 
+                  onClick={() => setShowContactModal(true)}
+                  className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest bg-white text-zinc-900 px-6 py-3 rounded-full hover:bg-zinc-200 transition-all"
+                >
                   立即加入 <ArrowRight size={16} />
                 </button>
               </div>
