@@ -5,7 +5,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { toBlob } from 'html-to-image';
+import { toCanvas } from 'html-to-image';
 import { 
   Mic, 
   Cpu, 
@@ -123,6 +123,7 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState('silicon-valley-2026');
   const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState('');
   const contentRef = useRef<HTMLDivElement>(null);
 
   const handleCopy = () => {
@@ -138,47 +139,115 @@ export default function App() {
     const el = contentRef.current;
 
     try {
-      // 1. 预热：给浏览器足够时间完成所有动画和图片解码
-      // 不再改变宽度，保留用户当前的移动端视图
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // 1. 彻底隐藏 UI 干扰元素
+      const noExportElements = document.querySelectorAll('.no-export, .fixed');
+      const originalStyles = Array.from(noExportElements).map(node => ({
+        display: (node as HTMLElement).style.display,
+        visibility: (node as HTMLElement).style.visibility
+      }));
       
-      // 2. 执行极致高清捕捉
-      const blob = await toBlob(el, {
-        cacheBust: true,
-        backgroundColor: '#ffffff',
-        pixelRatio: 6, // 极致 6 倍采样，确保移动端布局下依然拥有 2000px+ 的物理宽度
-        filter: (node) => {
-          // 排除不需要导出的 UI
-          if (node instanceof HTMLElement) {
-            if (node.classList.contains('no-export')) return false;
-            // 隐藏所有固定定位的元素（进度条等）
-            if (window.getComputedStyle(node).position === 'fixed') return false;
-          }
-          return true;
-        },
-        style: {
-          transform: 'none',
-          borderRadius: '0',
-          margin: '0',
-          padding: '0'
-        }
+      noExportElements.forEach(node => {
+        (node as HTMLElement).style.display = 'none';
+        (node as HTMLElement).style.visibility = 'hidden';
       });
 
-      if (!blob) throw new Error('Blob generation failed');
+      // 2. 确保资源加载并稳定
+      await document.fonts.ready;
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.download = `Physical-AI-Recap-MobileHD-${activeTab}.png`;
-      link.href = url;
-      link.click();
+      // 3. 全局捕捉：从顶部到底部按切片捕捉整个容器
+      const canvases: HTMLCanvasElement[] = [];
+      const totalWidth = el.offsetWidth;
+      const totalHeight = el.scrollHeight;
+      const chunkHeight = 2000; // 2000px 一个切片，平衡清晰度与内存
+      const numChunks = Math.ceil(totalHeight / chunkHeight);
+
+      for (let i = 0; i < numChunks; i++) {
+        const currentY = i * chunkHeight;
+        const currentH = Math.min(chunkHeight, totalHeight - currentY);
+        
+        setExportProgress(`正在高清渲染: 第 ${i + 1} / ${numChunks} 部分`);
+        
+        const canvas = await captureSliceToCanvas(el, currentY, currentH, totalWidth);
+        canvases.push(canvas);
+        
+        // 给浏览器喘息机会
+        await new Promise(resolve => setTimeout(resolve, 200));
+      }
+
+      // 4. 自动缝合所有 Canvas 为一张长图
+      setExportProgress('正在无缝缝合长图...');
+      const finalCanvas = mergeCanvases(canvases);
+
+      // 5. 恢复 UI 元素
+      noExportElements.forEach((node, i) => {
+        (node as HTMLElement).style.display = originalStyles[i].display;
+        (node as HTMLElement).style.visibility = originalStyles[i].visibility;
+      });
+
+      // 6. 导出最终长图
+      setExportProgress('正在生成最终文件...');
+      finalCanvas.toBlob((blob) => {
+        if (blob) {
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.download = `Physical-AI-Recap-Full-HighRes-${activeTab}.png`;
+          link.href = url;
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 2000);
+        }
+        setExportProgress('');
+        setIsExporting(false);
+        alert('高清长图导出成功！排版已优化为像素级同步。');
+      }, 'image/png', 1.0);
       
-      setTimeout(() => URL.revokeObjectURL(url), 2000);
     } catch (err) {
       console.error('Export failed:', err);
-      alert('高清导出失败。由于 6 倍采样对内存要求极高，如果失败，请尝试稍微缩小浏览器窗口或刷新页面后再试。');
-    } finally {
+      alert('高清导出失败，请重试。');
       setIsExporting(false);
+      setExportProgress('');
     }
+  };
+
+  // 核心捕捉函数：捕捉容器的特定切片
+  const captureSliceToCanvas = async (containerEl: HTMLElement, yOffset: number, sliceHeight: number, width: number) => {
+    return await toCanvas(containerEl, {
+      cacheBust: true,
+      backgroundColor: '#ffffff',
+      pixelRatio: 3, 
+      width: width,
+      height: sliceHeight,
+      style: {
+        width: `${width}px`,
+        // 通过 transform 将容器向上移动，配合 height 选项实现切片捕捉
+        transform: `translateY(-${yOffset}px)`,
+        transformOrigin: 'top left',
+        margin: '0',
+        padding: '0',
+      },
+      includeQueryParams: true,
+    });
+  };
+
+  // 缝合函数：将多个 Canvas 垂直拼接
+  const mergeCanvases = (canvases: HTMLCanvasElement[]) => {
+    const totalHeight = canvases.reduce((sum, c) => sum + c.height, 0);
+    const width = canvases[0].width;
+    
+    const finalCanvas = document.createElement('canvas');
+    finalCanvas.width = width;
+    finalCanvas.height = totalHeight;
+    const ctx = finalCanvas.getContext('2d');
+    
+    if (!ctx) throw new Error('Could not get canvas context');
+
+    let currentY = 0;
+    for (const canvas of canvases) {
+      ctx.drawImage(canvas, 0, currentY);
+      currentY += canvas.height;
+    }
+    
+    return finalCanvas;
   };
 
   const tabs = [
@@ -190,7 +259,7 @@ export default function App() {
     <div ref={contentRef} className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
       <AnimatePresence>
         {showContactModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 no-export">
             <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -337,7 +406,7 @@ export default function App() {
       </header>
 
       {/* Tab Navigation */}
-      <nav className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-100">
+      <nav className="no-export sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-zinc-100">
         <div className="max-w-screen-md mx-auto px-6">
           <div className="flex gap-8">
             {tabs.map((tab) => (
@@ -372,7 +441,7 @@ export default function App() {
               transition={{ duration: 0.4 }}
             >
               {/* Overview */}
-              <section className="mb-40">
+              <section className="export-section mb-40" data-section-name="01-Overview">
                 <SectionHeader number="01" title="活动概览" subtitle="Overview" />
                 <div className="space-y-8 text-lg leading-relaxed text-zinc-800">
                   <p>
@@ -602,38 +671,58 @@ export default function App() {
               </section>
 
               {/* Part 3 */}
-              <section className="mb-40">
-                <SectionHeader number="04" title="Lightning Demo" subtitle="Ideas to Reality" />
-                
-                <p className="text-zinc-500 text-sm mb-12">在活动的最后阶段，四位开发者带着他们的软硬件项目进行了快速路演与演示：</p>
-                
-                <div className="grid grid-cols-1 gap-8">
-                  <DemoItem 
-                    title="AI 创业孵化支持"
-                    author="酥鱼 (望京科技园·OPC智创社区)"
-                    icon={Users}
-                    description="作为本次活动的场地支持方，望京科技园介绍了其为 Physical Al 创业团队提供的具体扶持政策：社区提供专属政策顾问、免费接入主流 AI 大模型、多模态生成工具、云桌面与协同平台、实时 AI 资源、生态产品测试、免费3个月灵活办公工位、工商财税法全托管、行业大会 Startup 展示等一站式特色服务，他们旨在为 AI 创业者提供全方位的落地支持。"
-                  />
-                  <DemoItem 
-                    title="儿童 AI 相机"
-                    author="韩留杰 (jumpo.ai)"
-                    icon={Smartphone}
-                    description="韩留杰展示了一款专门面向 3-8 岁儿童的实体 AI 相机。这款产品的核心理念是鼓励孩子走出房间，探索现实世界，而不是沉溺于屏幕游戏。当孩子拍下花草或动物时，AI 会立刻进行语音解答和启发式对话（例如科普「狮子是唯一群居的猫科动物」），满足孩子的好奇心，并为他们提供探索世界的「第一步」。"
-                  />
-                  <DemoItem 
-                    title="M5Stack 桌面小助手"
-                    author="豪大 (One Person Company)"
-                    icon={Cpu}
-                    description="作为一名经验丰富的软件产品经理，豪大分享了他用 M5Stack 硬件「手搓」的桌面 AI 伴侣。这个小巧的设备不仅能与电脑端的 OpenClaw（开源项目）数据打通，进行语音转文字的实时对话，还集成了 3D 打印的「龙虾」外壳，能根据天气变化（AI 自动给角色戴上墨镜或口罩）进行视觉反馈，并提供了「敲木鱼」等互动功能，成为程序员工作之余的解压神器。"
-                  />
-                  <DemoItem 
-                    title="AI 校园生活平台"
-                    author="李昂 (大学生创业者)"
-                    icon={MessageSquare}
-                    description="工业设计专业的李昂展示了他为大学生设计的 AI 聚合平台。该平台的核心在于利用 AI Agent 来聚合信息，解决大学生在校园生活中面临的碎片化信息难题。例如，他开发的 Agent 可以 24 小时自动在校园二手交易平台上筛选并筛选出用户需要的二手书信息，从而将大学生从繁重的人工信息筛选中解放出来，实现「人力无法覆盖的任务」。平台旨在为大学生提供一个聚合信息、实现小生意交易和创业闭环的空间。"
-                  />
+              <div>
+                <section className="mb-40">
+                  <SectionHeader number="04" title="Lightning Demo" subtitle="Ideas to Reality" />
+                  
+                  <p className="text-zinc-500 text-sm mb-12">在活动的最后阶段，四位开发者带着他们的软硬件项目进行了快速路演与演示：</p>
+                  
+                  <div className="grid grid-cols-1 gap-8">
+                    <DemoItem 
+                      title="AI 创业孵化支持"
+                      author="酥鱼 (望京科技园·OPC智创社区)"
+                      icon={Users}
+                      description="作为本次活动的场地支持方，望京科技园介绍了其为 Physical Al 创业团队提供的具体扶持政策：社区提供专属政策顾问、免费接入主流 AI 大模型、多模态生成工具、云桌面与协同平台、实时 AI 资源、生态产品测试、免费3个月灵活办公工位、工商财税法全托管、行业大会 Startup 展示等一站式特色服务，他们旨在为 AI 创业者提供全方位的落地支持。"
+                    />
+                    <DemoItem 
+                      title="儿童 AI 相机"
+                      author="韩留杰 (jumpo.ai)"
+                      icon={Smartphone}
+                      description="韩留杰展示了一款专门面向 3-8 岁儿童的实体 AI 相机。这款产品的核心理念是鼓励孩子走出房间，探索现实世界，而不是沉溺于屏幕游戏。当孩子拍下花草或动物时，AI 会立刻进行语音解答和启发式对话（例如科普「狮子是唯一群居的猫科动物」），满足孩子的好奇心，并为他们提供探索世界的「第一步」。"
+                    />
+                    <DemoItem 
+                      title="M5Stack 桌面小助手"
+                      author="豪大 (One Person Company)"
+                      icon={Cpu}
+                      description="作为一名经验丰富的软件产品经理，豪大分享了他用 M5Stack 硬件「手搓」的桌面 AI 伴侣。这个小巧的设备不仅能与电脑端的 OpenClaw（开源项目）数据打通，进行语音转文字的实时对话，还集成了 3D 打印的「龙虾」外壳，能根据天气变化（AI 自动给角色戴上墨镜或口罩）进行视觉反馈，并提供了「敲木鱼」等互动功能，成为程序员工作之余的解压神器。"
+                    />
+                    <DemoItem 
+                      title="AI 校园生活平台"
+                      author="李昂 (大学生创业者)"
+                      icon={MessageSquare}
+                      description="工业设计专业的李昂展示了他为大学生设计的 AI 聚合平台。该平台的核心在于利用 AI Agent 来聚合信息，解决大学生在校园生活中面临的碎片化信息难题。例如，他开发的 Agent 可以 24 小时自动在校园二手交易平台上筛选并筛选出用户需要的二手书信息，从而将大学生从繁重的人工信息筛选中解放出来，实现「人力无法覆盖的任务」。平台旨在为大学生提供一个聚合信息、实现小生意交易和创业闭环的空间。"
+                    />
+                  </div>
+                </section>
+              </div>
+
+              {/* Footer */}
+              <div>
+                <div className="bg-zinc-900 rounded-[3rem] p-12 text-center text-white">
+                  <Sparkles className="mx-auto mb-6 text-zinc-400" size={40} />
+                  <h3 className="text-3xl font-black mb-4 tracking-tighter uppercase">Join the Future</h3>
+                  <p className="text-zinc-400 text-sm mb-10 leading-relaxed">
+                    Physical AI 的浪潮才刚刚开始。<br />
+                    关注我们，获取最前沿的行业深度报告。
+                  </p>
+                  <button 
+                    onClick={() => setShowContactModal(true)}
+                    className="w-full py-5 bg-white text-zinc-900 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-zinc-100 transition-colors"
+                  >
+                    获取完整报告
+                  </button>
                 </div>
-              </section>
+              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -644,7 +733,7 @@ export default function App() {
               transition={{ duration: 0.4 }}
             >
               {/* Overview */}
-              <section className="mb-40">
+              <section className="export-section mb-40" data-section-name="01-Overview">
                 <SectionHeader number="01" title="活动概览" subtitle="Overview" />
                 <div className="space-y-8 text-lg leading-relaxed text-zinc-800">
                   <p>
@@ -1014,11 +1103,14 @@ export default function App() {
               className="no-export flex items-center gap-2 px-4 py-2 bg-zinc-100 hover:bg-zinc-200 text-zinc-500 hover:text-zinc-900 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all disabled:opacity-50"
             >
               {isExporting ? (
-                <div className="w-3 h-3 border border-zinc-300 border-t-zinc-900 rounded-full animate-spin" />
+                <div className="flex flex-col items-center gap-2">
+                  <div className="w-3 h-3 border border-zinc-300 border-t-zinc-900 rounded-full animate-spin" />
+                  <span className="text-[8px] text-zinc-400">{exportProgress}</span>
+                </div>
               ) : (
                 <Download size={12} />
               )}
-              {isExporting ? '正在生成高清长图...' : '导出高清长图'}
+              {isExporting ? '正在生成高清分段图...' : '导出高清分段图'}
             </button>
           </div>
         </footer>
