@@ -155,37 +155,49 @@ export default function App() {
       await document.fonts.ready;
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // 3. 全局捕捉：从顶部到底部按切片捕捉整个容器
-      const canvases: HTMLCanvasElement[] = [];
-      const totalWidth = el.offsetWidth;
+      // 3. 动态计算安全的 pixelRatio (针对 iOS 16.7M 像素限制)
+      const totalWidth = el.clientWidth; // 使用 clientWidth 避开滚动条
       const totalHeight = el.scrollHeight;
-      const chunkHeight = 2000; // 2000px 一个切片，平衡清晰度与内存
+      
+      // 初始尝试 3倍采样 (Retina)
+      let targetPixelRatio = 3;
+      const MAX_PIXELS = 15000000; // 预留安全余量的 15M 像素
+      
+      const currentTotalPixels = (totalWidth * targetPixelRatio) * (totalHeight * targetPixelRatio);
+      if (currentTotalPixels > MAX_PIXELS) {
+        // 如果面积超标，动态计算合适的倍率
+        targetPixelRatio = Math.floor(Math.sqrt(MAX_PIXELS / (totalWidth * totalHeight)) * 10) / 10;
+        console.warn(`检测到超长页面，为防止内存崩溃，已将采样倍率降至: ${targetPixelRatio}`);
+      }
+
+      // 4. 全局捕捉：分段渲染
+      const canvases: HTMLCanvasElement[] = [];
+      const chunkHeight = 1500; // 减小切片高度，提高稳定性
       const numChunks = Math.ceil(totalHeight / chunkHeight);
 
       for (let i = 0; i < numChunks; i++) {
         const currentY = i * chunkHeight;
         const currentH = Math.min(chunkHeight, totalHeight - currentY);
         
-        setExportProgress(`正在高清渲染: 第 ${i + 1} / ${numChunks} 部分`);
+        setExportProgress(`正在高清渲染: 第 ${i + 1} / ${numChunks} 部分 (倍率: ${targetPixelRatio})`);
         
-        const canvas = await captureSliceToCanvas(el, currentY, currentH, totalWidth);
+        const canvas = await captureSliceToCanvas(el, currentY, currentH, totalWidth, targetPixelRatio);
         canvases.push(canvas);
         
-        // 给浏览器喘息机会
-        await new Promise(resolve => setTimeout(resolve, 200));
+        await new Promise(resolve => setTimeout(resolve, 300));
       }
 
-      // 4. 自动缝合所有 Canvas 为一张长图
+      // 5. 自动缝合
       setExportProgress('正在无缝缝合长图...');
       const finalCanvas = mergeCanvases(canvases);
 
-      // 5. 恢复 UI 元素
+      // 6. 恢复 UI 元素
       noExportElements.forEach((node, i) => {
         (node as HTMLElement).style.display = originalStyles[i].display;
         (node as HTMLElement).style.visibility = originalStyles[i].visibility;
       });
 
-      // 6. 导出最终长图
+      // 7. 导出最终长图
       setExportProgress('正在生成最终文件...');
       finalCanvas.toBlob((blob) => {
         if (blob) {
@@ -198,7 +210,7 @@ export default function App() {
         }
         setExportProgress('');
         setIsExporting(false);
-        alert('高清长图导出成功！排版已优化为像素级同步。');
+        alert(`高清长图导出成功！\n采样倍率: ${targetPixelRatio}x\n已自动绕过内存限制并修复排版。`);
       }, 'image/png', 1.0);
       
     } catch (err) {
@@ -209,17 +221,17 @@ export default function App() {
     }
   };
 
-  // 核心捕捉函数：捕捉容器的特定切片
-  const captureSliceToCanvas = async (containerEl: HTMLElement, yOffset: number, sliceHeight: number, width: number) => {
+  // 核心捕捉函数：优化后的切片捕捉
+  const captureSliceToCanvas = async (containerEl: HTMLElement, yOffset: number, sliceHeight: number, width: number, pixelRatio: number) => {
     return await toCanvas(containerEl, {
       cacheBust: true,
       backgroundColor: '#ffffff',
-      pixelRatio: 3, 
+      pixelRatio: pixelRatio, 
       width: width,
       height: sliceHeight,
       style: {
         width: `${width}px`,
-        // 通过 transform 将容器向上移动，配合 height 选项实现切片捕捉
+        // 使用 transform 平移，但确保容器高度足够，防止某些引擎的裁切 Bug
         transform: `translateY(-${yOffset}px)`,
         transformOrigin: 'top left',
         margin: '0',
@@ -964,16 +976,8 @@ export default function App() {
                     <div className="space-y-10">
                       <QuoteBlock 
                         author="Troy Hua"
-                        text="我们尽量减少在工程化里强行进行『信息压缩』的人为干预，让模型具备更强的能力去处理海量数据。语言、视觉和其他感官的结合，会让记忆的方式越来越自然。"
+                        text="EverMind 训练并开发了 MSA 模型（Memory Sparse Attention），是一个可以支持 1 亿 token 的记忆模型，去掉工程化的记忆方案，使用原生的训练场景。这意味着你可以对一整部电影甚至一整天的视频记录进行精准的问答。"
                       />
-                      <div className="p-10 border border-zinc-200 rounded-[2.5rem] bg-zinc-50 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 p-8 opacity-5">
-                          <Database size={100} />
-                        </div>
-                        <p className="text-lg text-zinc-600 leading-relaxed relative z-10">
-                          我们提出了 <span className="font-bold text-zinc-900">Memory Sparse Attention</span> 架构，支持一亿 Token 的上下文操作，天然支持多模态数据，不需要转译成文本，在没有任何信息损失的情况下直接进入 AI。这意味着你可以对一整部电影甚至一整天的视频记录进行精准的问答。
-                        </p>
-                      </div>
                     </div>
                   </RoundTableTopic>
 
@@ -1110,7 +1114,7 @@ export default function App() {
               ) : (
                 <Download size={12} />
               )}
-              {isExporting ? '正在生成高清分段图...' : '导出高清分段图'}
+              {isExporting ? '正在生成高清分段图...' : '导出高清图'}
             </button>
           </div>
         </footer>
