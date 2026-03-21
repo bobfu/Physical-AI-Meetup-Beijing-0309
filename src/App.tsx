@@ -175,18 +175,20 @@ export default function App() {
       
       // 初始尝试 3倍采样 (Retina)
       let targetPixelRatio = 3;
-      const MAX_PIXELS = 15000000; // 预留安全余量的 15M 像素
+      const MAX_PIXELS = 40000000; // 提高上限至 40M 像素，兼顾高清与稳定性
       
       const currentTotalPixels = (totalWidth * targetPixelRatio) * (totalHeight * targetPixelRatio);
       if (currentTotalPixels > MAX_PIXELS) {
         // 如果面积超标，动态计算合适的倍率
         targetPixelRatio = Math.floor(Math.sqrt(MAX_PIXELS / (totalWidth * totalHeight)) * 10) / 10;
-        console.warn(`检测到超长页面，为防止内存崩溃，已将采样倍率降至: ${targetPixelRatio}`);
+        // 确保最低不低于 2.0，保证基本清晰度
+        targetPixelRatio = Math.max(targetPixelRatio, 2.0);
+        console.warn(`检测到超长页面，为防止内存崩溃，已将采样倍率调整至: ${targetPixelRatio}`);
       }
 
       // 4. 全局捕捉：分段渲染
       const canvases: HTMLCanvasElement[] = [];
-      const chunkHeight = 1500; // 减小切片高度，提高稳定性
+      const chunkHeight = 2000; // 适度增加切片高度，减少缝合次数
       const numChunks = Math.ceil(totalHeight / chunkHeight);
 
       for (let i = 0; i < numChunks; i++) {
@@ -290,10 +292,10 @@ export default function App() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 z-50 p-4 bg-zinc-900 text-white rounded-full shadow-2xl hover:scale-110 transition-transform no-export"
+            className="fixed bottom-6 right-6 z-50 p-2 bg-white/50 backdrop-blur-sm border border-zinc-200/50 text-zinc-400 hover:text-zinc-900 rounded-full transition-all no-export shadow-sm"
             aria-label="Back to top"
           >
-            <ArrowUp size={24} />
+            <ArrowUp size={18} />
           </motion.button>
         )}
       </AnimatePresence>
@@ -453,7 +455,10 @@ export default function App() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                 className={`py-6 text-sm font-bold uppercase tracking-widest transition-all relative ${
                   activeTab === tab.id ? 'text-zinc-900' : 'text-zinc-400 hover:text-zinc-600'
                 }`}
