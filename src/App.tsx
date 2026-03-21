@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { toCanvas } from 'html-to-image';
 import { 
@@ -26,7 +26,8 @@ import {
   Check,
   Lightbulb,
   Database,
-  Download
+  Download,
+  ArrowUp
 } from 'lucide-react';
 
 const SectionHeader = ({ title, subtitle, number }: { title: string, subtitle?: string, number: string }) => (
@@ -124,7 +125,20 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('silicon-valley-2026');
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState('');
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText('bob_fu');
@@ -269,6 +283,21 @@ export default function App() {
 
   return (
     <div ref={contentRef} className="min-h-screen bg-white font-sans text-zinc-900 selection:bg-zinc-900 selection:text-white">
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 z-50 p-4 bg-zinc-900 text-white rounded-full shadow-2xl hover:scale-110 transition-transform no-export"
+            aria-label="Back to top"
+          >
+            <ArrowUp size={24} />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showContactModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 no-export">
