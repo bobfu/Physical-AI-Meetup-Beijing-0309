@@ -904,7 +904,7 @@ export default function App() {
                     </div>
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
                       <p className="text-lg font-black text-zinc-900 mb-2">嘉宾｜Kara 李欣航</p>
-                      <p className="text-sm text-zinc-500 leading-relaxed">同歌创投（歌尔股份产业资本）执行董事。专注早期 AI 软硬一体产品及前沿技术带来的新体验。</p>
+                      <p className="text-sm text-zinc-500 leading-relaxed">同歌创投执行董事，聚焦游戏、应用、智能硬件公司的天使轮投资，挖掘技术驱动的下一代用户体验</p>
                     </div>
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
                       <p className="text-lg font-black text-zinc-900 mb-2">嘉宾｜Troy Hua</p>
@@ -941,7 +941,7 @@ export default function App() {
                       <div className="grid grid-cols-1 gap-8">
                         <QuoteBlock 
                           author="William Gao"
-                          text="目前大家在 Coding 场景下可能只消耗 100 个 Token，但在 Consumer 场景下可能是 1000 倍的量。如何进一步让它把 Output 变成一个长时间、相对复杂的 Agent Action？这是业界正在转变的方向，也是我们在做的事情。"
+                          text="目前大家在 Consumer 场景中 output token 依然是 input token 的 1-10 倍，而 coding 场景其实已经到了 1000 倍以上，有用程度也远超。要让 Consumer 场景也能频繁做复杂长程的 Agent actions，达到这个 1000 倍，就必然需要 always on 带来的大量 context。"
                         />
                         <QuoteBlock 
                           author="Troy Hua"
@@ -1010,7 +1010,7 @@ export default function App() {
                       <div className="p-10 border border-zinc-200 rounded-[2.5rem] hover:border-zinc-900 transition-colors group">
                         <h5 className="font-black text-2xl text-zinc-900 mb-6 group-hover:translate-x-2 transition-transform">William 的建议</h5>
                         <p className="text-zinc-600 leading-relaxed">
-                          今天的时代红利极大，在北美，很多人并不在意你是否采用最前沿的技术，只要你把 <span className="font-bold text-zinc-900">PLG（产品驱动增长）</span> 做好，实实在在地解决特定需求，就能卖得很好。大公司还没填满所有的缝隙，这就是机会。
+                          今天的时代红利极大，在北美纯软件的 AI 应用正在面临模型端的巨大挑战，但本地的人才结构在硬件上又天然弱势。出色的硬件产品接下来两年有很大机会在北美市场跑出漂亮的 PLG。
                         </p>
                       </div>
                     </div>
