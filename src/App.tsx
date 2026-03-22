@@ -938,7 +938,7 @@ export default function App() {
                     </div>
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
                       <p className="text-lg font-black text-zinc-900 mb-2">嘉宾｜Kara 李欣航</p>
-                      <p className="text-sm text-zinc-500 leading-relaxed">同歌创投执行董事，聚焦游戏、应用、智能硬件公司的天使轮投资，挖掘技术驱动的下一代用户体验</p>
+                      <p className="text-sm text-zinc-500 leading-relaxed">同歌创投执行董事，聚焦游戏、应用、智能硬件公司的天使轮投资，挖掘技术驱动的下一代用户体验。</p>
                     </div>
                     <div className="bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-md transition-shadow">
                       <p className="text-lg font-black text-zinc-900 mb-2">嘉宾｜Troy Hua</p>
@@ -956,7 +956,7 @@ export default function App() {
                     <div className="space-y-8 text-zinc-700 leading-relaxed text-lg">
                       <div className="pl-6 border-l-4 border-zinc-200">
                         <p className="font-bold text-zinc-900 mb-2">Kara 李欣航：</p>
-                        <p>我们是一家产业资本，专注于 AI 软硬一体的产品及前沿技术带来的新体验。像我现在佩戴的这款产品叫 Looki，它是一个多模态的 AI 智能硬件，给 AI 长了眼睛和耳朵。我们主要在早期为创业者提供资金与供应链支持。</p>
+                        <p>我们是一家聚焦科技投资的 VC，我本人以前来自游戏公司，目前重点投资技术带来的 consumer 创新体验，我投资的方向包括游戏、应用、以及 to c 智能硬件。我们愿意为创业者提供第一笔钱。</p>
                       </div>
                       <div className="pl-6 border-l-4 border-zinc-200">
                         <p className="font-bold text-zinc-900 mb-2">Troy Hua：</p>
@@ -983,7 +983,7 @@ export default function App() {
                         />
                         <QuoteBlock 
                           author="Kara 李欣航"
-                          text="当 AI 进入物理世界，能看能听以后，它带来的价值远远超出了我们今天的预期。比如你在旧金山圣帕特里克教堂附近想买巧克力，它能主动提醒你宫殿剧院旁边就有一家。或者在加州传出无人机袭击谣言时，它能根据你的位置给出最近的避难出口建议。它能主动想在你前面、帮在你前面，这是 Proactive AI 的大趋势。"
+                          text="Proactive AI 能主动想在你前面、甚至在你提出要求前就提供适宜的服务和帮助。近期我在美国出差，刚好体验了 Looki 的 Proactive AI 功能，朋友让我代购一个旧金山的巧克力，但我没空专门去买，Looki 看到我在圣帕特里克教堂对面时主动提醒我旁边 200 米的酒店里可以买到那个品牌。加州传出无人机袭击谣言时，Looki 会安慰我的情绪，告诉我不用担心并没有真实危险，但它看到我在 GTC 会场人很多的时候会主动提示我还是可以留意一下紧急出口位置。"
                         />
                       </div>
                     </div>
@@ -997,10 +997,7 @@ export default function App() {
                       <div className="relative z-10">
                         <h5 className="text-zinc-500 text-xs font-bold uppercase tracking-widest mb-6">Kara 李欣航 (同歌创投)</h5>
                         <p className="text-2xl font-medium leading-relaxed mb-8">
-                          「硬件端最大的挑战之一就是功耗。你需要在『场景、功耗、佩戴体验』这三者之间去做一个 Trade-off。」
-                        </p>
-                        <p className="text-zinc-400 leading-relaxed">
-                          当下确实有很多完美形态还做不到，但这会随着底座能力的提升逐渐被解决。我们需要把硬件供应链的优势和软件大模型的能力结合起来。比如在特定传感器开启的情况下，如何保证电池续航，这是每一个硬件创业者都要面对的现实。
+                          「硬件端最大的挑战是基于用户体验的 trade off。创业者需要在『场景、功耗、佩戴体验』这三者之间去做平衡。」
                         </p>
                       </div>
                     </div>
@@ -1032,7 +1029,7 @@ export default function App() {
                       <div className="p-10 border border-zinc-200 rounded-[2.5rem] hover:border-zinc-900 transition-colors group">
                         <h5 className="font-black text-2xl text-zinc-900 mb-6 group-hover:translate-x-2 transition-transform">Kara 的建议</h5>
                         <p className="text-zinc-600 leading-relaxed">
-                          北美是极好的市场，用户付费意愿强。下一代硬件的商业模式大概是 <span className="font-bold text-zinc-900">硬件 + 订阅</span>，要靠软件赚钱。同时一定要 Leverage 中国的供应链优势，这能带来数量级上的成本和效率差异。
+                          很多新硬件的商业模式正在从买硬件变成硬件+订阅费，北美用户在订阅付费的习惯方面更成熟。中国有非常强的供应链和人才资源。创业公司用好多元优势，有机会带来数量级上的成本和效率差异。
                         </p>
                       </div>
                       <div className="p-10 border border-zinc-200 rounded-[2.5rem] hover:border-zinc-900 transition-colors group">
