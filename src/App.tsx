@@ -751,24 +751,6 @@ export default function App() {
                   </div>
                 </section>
               </div>
-
-              {/* Footer */}
-              <div>
-                <div className="bg-zinc-900 rounded-[3rem] p-12 text-center text-white">
-                  <Sparkles className="mx-auto mb-6 text-zinc-400" size={40} />
-                  <h3 className="text-3xl font-black mb-4 tracking-tighter uppercase">Join the Future</h3>
-                  <p className="text-zinc-400 text-sm mb-10 leading-relaxed">
-                    Physical AI 的浪潮才刚刚开始。<br />
-                    关注我们，获取最前沿的行业深度报告。
-                  </p>
-                  <button 
-                    onClick={() => setShowContactModal(true)}
-                    className="w-full py-5 bg-white text-zinc-900 rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-zinc-100 transition-colors"
-                  >
-                    获取完整报告
-                  </button>
-                </div>
-              </div>
             </motion.div>
           ) : (
             <motion.div
