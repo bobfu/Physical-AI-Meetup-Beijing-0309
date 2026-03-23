@@ -173,16 +173,16 @@ export default function App() {
       const totalWidth = el.clientWidth; // 使用 clientWidth 避开滚动条
       const totalHeight = el.scrollHeight;
       
-      // 初始尝试 3倍采样 (Retina)
-      let targetPixelRatio = 3;
-      const MAX_PIXELS = 40000000; // 提高上限至 40M 像素，兼顾高清与稳定性
+      // 初始尝试 4倍采样 (Ultra High Res)
+      let targetPixelRatio = 4;
+      const MAX_PIXELS = 80000000; // 提高上限至 80M 像素，显著提升长图清晰度
       
       const currentTotalPixels = (totalWidth * targetPixelRatio) * (totalHeight * targetPixelRatio);
       if (currentTotalPixels > MAX_PIXELS) {
         // 如果面积超标，动态计算合适的倍率
         targetPixelRatio = Math.floor(Math.sqrt(MAX_PIXELS / (totalWidth * totalHeight)) * 10) / 10;
-        // 确保最低不低于 2.0，保证基本清晰度
-        targetPixelRatio = Math.max(targetPixelRatio, 2.0);
+        // 确保最低不低于 2.5，保证基本清晰度
+        targetPixelRatio = Math.max(targetPixelRatio, 2.5);
         console.warn(`检测到超长页面，为防止内存崩溃，已将采样倍率调整至: ${targetPixelRatio}`);
       }
 
@@ -834,23 +834,23 @@ export default function App() {
                   <FullSpeakerSection 
                     name="Morgan Suo"
                     role="Senior GTM Manager @ MiniMax"
-                    background="MiniMax 是全球领先的 AGI 创新企业，拥有涵盖大语言模型（M2.5）、视频生成（Hailuo-2.3）和原生语音（Speech-2.6）的全模态自研模型体系。"
+                    background="MiniMax AI + 智能硬件解决方案"
                     content={[
                       {
                         title: "1. MiniMax：全模态大模型驱动 AGI 创新",
-                        body: "其海螺视频模型在半年内生成超 3 亿视频；公司内部 70% 的代码由 AI 生成，展现了极高的生产级效率，致力于教模型在动态环境中学习如何推理。"
+                        body: "MiniMax 是全球领先的 AGI 创新企业，拥有涵盖大语言模型、视频生成和原生语音的全模态自研模型体系。其海螺视频模型在半年内生成超 3 亿视频；公司内部 70% 的代码由 AI 生成，展现极高的生产级效率，致力于让模型在动态环境中学习如何推理。"
                       },
                       {
                         title: "2. 破局硬件交互困境：一站式音视频解决方案",
-                        body: "传统硬件语音交互面临研发成本高（需自行缝合 ASR/TTS/LLM 等）和交互延迟高（首包响应慢、无情感）的痛点。MiniMax 提供一站式云端解决方案，使 ESP32 等低功耗硬件也能流畅运行复杂的 AI 逻辑，大幅降低了厂商的开发门槛并缩短了上线周期。"
+                        body: "传统硬件语音交互面临研发成本高（需自行缝合 ASR/TTS/LLM 等模块）和交互延迟高（首包响应慢、无情感）的双重痛点。MiniMax 提供一站式云端解决方案，使 ESP32 等低功耗硬件也能流畅运行复杂 AI 逻辑，大幅降低开发门槛并缩短上线周期。"
                       },
                       {
                         title: "3. 极致拟人的交互体验：极速、极拟人、极智能",
-                        body: "原生语音方案（如 Speech-2.8）支持「边想边说」技术，实时交互延迟低于 250 毫秒，能自然处理呼吸声、停顿并支持实时打断。系统仅需 10 秒音频即可实现 1:1 声音克隆，满足用户对亲友声音定制等情感化需求，让硬件从冷冰冰的指令机转变为有温度的伙伴。"
+                        body: "原生语音方案支持「边想边说」技术，语音合成首包时延低至 300ms，能自然处理呼吸声、停顿并支持实时打断。系统仅需 10 秒音频即可实现 1:1 声音克隆，满足用户对亲友声音复刻等情感化需求。支持 40+ 种全球语言（含粤语、印地语、泰语等），让硬件从冷冰冰的指令机转变为有温度的伙伴。"
                       },
                       {
                         title: "4. 全场景赋能与价值重构",
-                        body: "MiniMax 的能力已渗透至 AI 眼镜（Rokid）、PC、陪伴玩具（Fuzozo）及智能座舱（比亚迪、长城等）等赛道。硬件不再是孤立的工具，而是蜕变为具备感知、记忆和推理能力的「物理智能体」，通过自然对话与用户产生情感共鸣，重构硬件的商业价值。"
+                        body: "MiniMax 的能力已渗透至 AI 眼镜、PC、平板、儿童陪伴玩具及智能座舱等赛道。硬件不再是孤立的工具，而是蜕变为具备感知、记忆和推理能力的「物理智能体」，通过自然对话与用户产生情感共鸣，重构硬件的商业价值。"
                       }
                     ]}
                   />
@@ -881,24 +881,24 @@ export default function App() {
 
                   <FullSpeakerSection 
                     name="冯晓东"
-                    role="Physical AI 产品线负责人, Agora"
-                    background="Agora 认为未来是「对话式物理 AI」时代，终端交互将从简单的文本指令进化为更具灵魂、拟人化的实时沟通。设备不再只是工具，而是能够实时感知并回应物理世界的智能体。"
+                    role="PHYSICAL AI 产品线负责人，AGORA"
+                    background="Agora 坚信，未来属于「对话式物理 AI」时代。终端交互将从简单的文本指令，进化为更具灵魂、拟人化的实时沟通。设备不再只是工具，而是能够实时感知并回应物理世界的智能体。"
                     content={[
                       {
-                        title: "1. 从 IoT 到 Physical AI：「LUI 颠覆 GUI」的时代",
-                        body: "随着 AI 爆发，硬件重心从「连接」转向「交互」。Agora 认为未来是「对话式物理 AI」的时代，终端交互将从简单的文本指令进化为更具灵魂、拟人化的实时沟通。设备不再只是工具，而是能够实时感知并回应物理世界的智能体。"
+                        title: "1. 从 AIoT 到 Physical AI：重新定义人机交互的黄金时代",
+                        body: "随着 AI 能力爆发，硬件的核心价值正从「连接」转向「交互」。Agora 认为，我们正站在从「功能机」迈向「情感机」与「智能体」的拐点。未来是「对话式物理 AI」时代，交互将超越指令，进化为有温度、有记忆、有情感的实时对话。设备将成为能够理解场景、感知情绪并主动回应的伙伴。"
                       },
                       {
-                        title: "2. 「一体两面」软硬底座：TEN 框架与开源 RTOS",
-                        body: "为打破开发壁垒，Agora 提供：\n• 软件端：TEN 开源框架，让开发者能用自然语言直接调控物理设备。\n• 硬件端：开源 RTOS 操作系统，抹平不同芯片与系统间的性能差异，提供标准化的基础设施。"
+                        title: "2. 「一体两面」的软硬开放生态：TEN 框架与开源 AOSL",
+                        body: "为打破行业碎片化与开发壁垒，Agora 致力于构建开放的基础设施：\n\n• 软件端：基于全球开发者广泛认可的 TEN 开源框架，让开发者能用自然语言直接驱动物理世界。\n\n• 硬件端：开源 AOSL（高级操作系统层） 项目，定义操作系统、芯片与实时通信层之间的标准接口。它有效屏蔽了底层芯片与系统的差异，为 RTOS、Linux 等各类嵌入式场景提供统一支持，让硬件从出厂即具备「Agora」的实时互动能力。"
                       },
                       {
-                        title: "3. 凤鸣 AI 引擎：解决 AI 的「听力」难题",
-                        body: "物理环境复杂，AI 往往难以在嘈杂场景下精准识别。Agora 通过凤鸣 AI 引擎，提供极致的降噪、背景人声过滤和说话人检测（VAD），让 AI 能够精准判断何时倾听、何时回答，告别迟钝与抢话。"
+                        title: "3. Conversational AI Engine Core：解决 AI 的「听力」与「理解」难题",
+                        body: "物理环境复杂多变，AI 必须在嘈杂中精准「听见」并「理解」意图。Agora 的 Conversational AI Engine Core 集成了十余年的音频技术沉淀，通过 AI-VAD（语音活动检测）、声纹识别、背景人声过滤 与 AI 降噪 等核心能力，让 AI 能精准判断对话节奏（何时倾听、何时回应），在复杂环境下依然保持清晰、流畅、拟人的交互体验，彻底告别反应迟钝与误打断。"
                       },
                       {
-                        title: "4. R2 套件进化：让 AI 「能听、能看、会动」",
-                        body: "最新的 R2 套件引入了视频流大模型视觉理解，使 AI 能理解动态过程而非静态图片。同时，通过支持电机驱动赋予设备「肢体语言」（如 AI 认错时低头），极大地增强了桌面机器人和陪伴类产品的拟人化体验与情感连接。"
+                        title: "4. R2 套件进化：让 AI 「能听、能看、会动」，具备情感与肢体语言",
+                        body: "最新的 R2 全场景 AI 机器人开发套件 在继承极致语音交互能力的基础上，引入了 本地视频流大模型视觉理解，使 AI 能理解动态过程而不仅是静态图片。同时，通过支持 多自由度运动控制，赋予设备丰富的「肢体语言」（例如，AI 在认错时会「低头」致歉），极大地增强了桌面机器人、陪伴类产品的情感连接与拟人化体验，推动 AI 硬件从「开口说话」向「能看会动」的情感智能体演进。"
                       }
                     ]}
                   />
