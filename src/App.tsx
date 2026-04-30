@@ -122,7 +122,7 @@ const DemoItem = ({ title, author, description, icon: Icon }: { title: string, a
 export default function App() {
   const [showContactModal, setShowContactModal] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [activeTab, setActiveTab] = useState('silicon-valley-2026');
+  const [activeTab, setActiveTab] = useState('hangzhou-2026');
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState('');
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -279,6 +279,7 @@ export default function App() {
   };
 
   const tabs = [
+    { id: 'hangzhou-2026', label: '杭州站 2026' },
     { id: 'silicon-valley-2026', label: '硅谷站 2026' },
     { id: 'beijing-2026', label: '北京站 2026' }
   ];
@@ -388,30 +389,29 @@ export default function App() {
           </div>
           
           <AnimatePresence mode="wait">
-            {activeTab === 'beijing-2026' ? (
+            {activeTab === 'hangzhou-2026' ? (
               <motion.div
-                key="beijing-hero"
+                key="hangzhou-hero"
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
               >
-                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mb-12">
-                  VOICE <br />
-                  AGENTS <br />
-                  <span className="text-zinc-600">& PHYSICAL AI</span>
+                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mb-12 uppercase">
+                  HANGZHOU <br />
+                  <span className="text-zinc-600">& VISUAL AGENT</span>
                 </h1>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
                   <p className="text-xl text-zinc-400 font-medium leading-tight">
-                    Physical AI Camp 北京站：<br />
-                    无所不在的语音智能体与物理 AI 的碰撞
+                    Physical AI Camp 杭州站：<br />
+                    聊聊 Context Awareness 和 Visual Agent
                   </p>
                   <div className="flex flex-col gap-4 text-right">
-                    <div className="text-sm text-zinc-500 font-mono">2026.03 BEIJING</div>
+                    <div className="text-sm text-zinc-500 font-mono">2026.04 HANGZHOU</div>
                     <div className="h-px w-24 bg-zinc-800 ml-auto"></div>
                   </div>
                 </div>
               </motion.div>
-            ) : (
+            ) : activeTab === 'silicon-valley-2026' ? (
               <motion.div
                 key="sv-hero"
                 initial={{ opacity: 0, x: -20 }}
@@ -430,6 +430,29 @@ export default function App() {
                   </p>
                   <div className="flex flex-col gap-4 text-right">
                     <div className="text-sm text-zinc-500 font-mono">2026.03 SUNNYVALE</div>
+                    <div className="h-px w-24 bg-zinc-800 ml-auto"></div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="beijing-hero"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+              >
+                <h1 className="text-6xl md:text-8xl lg:text-9xl font-black tracking-tighter text-white leading-[0.85] mb-12">
+                  VOICE <br />
+                  AGENTS <br />
+                  <span className="text-zinc-600">& PHYSICAL AI</span>
+                </h1>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-end">
+                  <p className="text-xl text-zinc-400 font-medium leading-tight">
+                    Physical AI Camp 北京站：<br />
+                    无所不在的语音智能体与物理 AI 的碰撞
+                  </p>
+                  <div className="flex flex-col gap-4 text-right">
+                    <div className="text-sm text-zinc-500 font-mono">2026.03 BEIJING</div>
                     <div className="h-px w-24 bg-zinc-800 ml-auto"></div>
                   </div>
                 </div>
@@ -478,7 +501,290 @@ export default function App() {
 
       <main className="max-w-screen-md mx-auto px-6 py-32">
         <AnimatePresence mode="wait">
-          {activeTab === 'beijing-2026' ? (
+          {activeTab === 'hangzhou-2026' ? (
+            <motion.div
+              key="hangzhou-content"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+            >
+              {/* Overview */}
+              <section className="export-section mb-40" data-section-name="01-Overview">
+                <SectionHeader number="01" title="活动概览" subtitle="Overview" />
+                <div className="space-y-8 text-lg leading-relaxed text-zinc-800">
+                  <p>
+                    如果一个 Agent 不仅能看清眼前画面，更能瞬间捕捉你忽略的周边细节与上下文，会发生什么？
+                  </p>
+                  <p>
+                    在杭州站，我们探讨了能够 Always on 且实时捕获环境数据的 <span className="font-bold border-b-2 border-zinc-900">Visual Agent（视觉智能体）</span> 如何成为人机共同体感知物理世界的关键。随着多模态模型的发展，获取真实世界的 Context 已不再是瓶颈，真正的挑战在于如何让 Context 与产品和市场真正契合。
+                  </p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
+                    <div className="p-10 bg-zinc-900 rounded-[2.5rem] text-white relative overflow-hidden group">
+                      <div className="absolute -top-10 -right-10 p-12 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                        <Zap size={200} />
+                      </div>
+                      <div className="relative z-10">
+                        <h3 className="text-3xl font-black mb-4 leading-tight italic uppercase tracking-tighter text-white">Physical AI Camp<br />超音速计划 2026</h3>
+                        <p className="text-zinc-400 text-sm mb-8 max-w-md">旨在扶持全球硬件 AI 创业团队的专项计划，欢迎杭州及周边创业者加入。</p>
+                        <button 
+                          onClick={() => setShowContactModal(true)}
+                          className="flex items-center gap-3 text-xs font-bold uppercase tracking-widest bg-white text-zinc-900 px-6 py-3 rounded-full hover:bg-zinc-200 transition-all font-mono"
+                        >
+                          Join the Camp <ArrowRight size={16} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="p-10 bg-white border border-zinc-200 rounded-[2.5rem] relative overflow-hidden group">
+                      <div className="absolute -top-10 -right-10 p-12 opacity-5 group-hover:scale-110 transition-transform duration-700">
+                        <Lightbulb size={200} />
+                      </div>
+                      <div className="relative z-10">
+                        <h3 className="text-3xl font-black mb-6 leading-tight text-zinc-900">💡 灵感时刻</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-1 gap-y-6">
+                          <div className="border-l-2 border-zinc-900 pl-6">
+                            <p className="text-sm text-zinc-600 mb-2 font-medium leading-relaxed">「视觉是最直觉的交互，打字是工业时代的妥协。真正优秀的 AI 产品不该有输入框，AI 必须跨越『看见』与『看懂』的鸿沟。」</p>
+                            <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">— 吴晓凡 (Chance AI)</p>
+                          </div>
+                          <div className="border-l-2 border-zinc-900 pl-6">
+                            <p className="text-sm text-zinc-600 mb-2 font-medium leading-relaxed">「可穿戴设备是通往『人机共生』的第一入口。AI 需要获取第一人称的多模态数据，交互主干应以语音为主，多模态（语义场）为辅。」</p>
+                            <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">— 杨天翼 (Rokid)</p>
+                          </div>
+                          <div className="border-l-2 border-zinc-900 pl-6">
+                            <p className="text-sm text-zinc-600 mb-2 font-medium leading-relaxed">「AI 产品目前多是『模型拉着工程补丁跑』。获取全量 Context 的难点在于用户隐私与有效信息提取。被忽视的长尾细节才是留存的关键。」</p>
+                            <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">— 孙思宁 (湃启科技)</p>
+                          </div>
+                          <div className="border-l-2 border-zinc-900 pl-6">
+                            <p className="text-sm text-zinc-600 mb-2 font-medium leading-relaxed">「如果内容无法被 Agent 索引，创作者将失去生存空间。真正的商业价值在于那些能利用多模态能力辅助人类进行非确定性决策的场景。」</p>
+                            <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">— Panda (Cerul.ai)</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Keynotes */}
+              <section className="mb-40">
+                <SectionHeader number="02" title="主题演讲" subtitle="Keynote Speeches" />
+                
+                <FullSpeakerSection 
+                  name="吴晓凡"
+                  role="Chance AI CTO"
+                  background="核心观点：视觉是人类处理复杂信息的最核心能力。主张彻底去除文本「输入框」，致力于让 AI 回归人类进化的本原。"
+                  content={[
+                    {
+                      title: "1. 视觉是最直觉的交互，真正的 AI 不该有输入框",
+                      body: "大脑主要是为了处理视觉信息而生。顺应 18-25 岁人群偏好视觉搜索的趋势，产品去掉了文本框，直接以镜头为入口。"
+                    },
+                    {
+                      title: "2. 「解说」能赋予事物巨大的情绪与商业价值",
+                      body: "AI 只有像解说员一样挖掘出事物背后的故事脉络，才能让普通事物产生溢价，这才是产品的灵魂。"
+                    },
+                    {
+                      title: "3. 建立三条路径实现真正的「看懂」",
+                      body: "通过训练垂直小模型专家、MoE 架构动态检索以及实时视觉数据底座，让 AI 能在垂直场景认出基础模型认错的事物。"
+                    }
+                  ]}
+                />
+
+                <FullSpeakerSection 
+                  name="孙思宁"
+                  role="声绘未来 & 浙江湃启科技联合创始人"
+                  background="核心探讨：如何通过智能语音技术留住情绪，打破 AI 产品「玩三天就腻」的体验魔咒。"
+                  content={[
+                    {
+                      title: "1. 持续消耗 Token 才有商业价值",
+                      body: "产品不能停留在单次猎奇，能让用户自发进行深度、多轮内心交流的应用才是未来。"
+                    },
+                    {
+                      title: "2. 拒绝技术自嗨，彻底隐藏门槛",
+                      body: "用户不关心 Agent 或提示词。Voice Agent 应采用对话、意图、调度三层异步架构，并在后台解决所有复杂性。"
+                    }
+                  ]}
+                />
+              </section>
+
+              {/* Round Tables */}
+              <section className="mb-40">
+                <SectionHeader number="03" title="圆桌讨论" subtitle="Round Table" />
+
+                <div className="space-y-32">
+                  {/* Round Table 01 */}
+                  <div>
+                    <div className="mb-12 p-10 bg-zinc-50 rounded-[3rem] border border-zinc-100">
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-10">
+                        <div className="max-w-xl">
+                          <h4 className="text-3xl font-black text-zinc-900 mb-4 leading-none">圆桌一：Building the Context</h4>
+                          <p className="text-zinc-500 text-lg font-medium">Agent 视觉与感知技术底座</p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm min-w-[280px]">
+                          <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Moderator / 主持人</p>
+                          <p className="text-lg font-black text-zinc-900">杨慧 Cynthia Yang</p>
+                          <p className="text-xs text-zinc-500 font-medium leading-relaxed mt-1">RTE 开发者社区发起人。致力于链接全球 AI 创业者与技术创新者。</p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="group bg-white p-6 rounded-2xl border border-zinc-100 hover:border-zinc-900 transition-colors">
+                          <p className="text-base font-black text-zinc-900 mb-1 flex items-center gap-2">彭晗 <span className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded text-zinc-500">嘉宾</span></p>
+                          <p className="text-xs text-zinc-500 font-medium leading-relaxed">蚂蚁集团高级算法专家。牛津物理博士，负责「百灵」大模后端算法。</p>
+                        </div>
+                        <div className="group bg-white p-6 rounded-2xl border border-zinc-100 hover:border-zinc-900 transition-colors">
+                          <p className="text-base font-black text-zinc-900 mb-1 flex items-center gap-2">张乾泽 <span className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded text-zinc-500">嘉宾</span></p>
+                          <p className="text-xs text-zinc-500 font-medium leading-relaxed">Agora Agent Platform Lead。资深语音 AI 专家，主攻语音交互架构。</p>
+                        </div>
+                        <div className="group bg-white p-6 rounded-2xl border border-zinc-100 hover:border-zinc-900 transition-colors">
+                          <p className="text-base font-black text-zinc-900 mb-1 flex items-center gap-2">孙思宁 <span className="text-[10px] bg-zinc-100 px-2 py-0.5 rounded text-zinc-500">嘉宾</span></p>
+                          <p className="text-xs text-zinc-500 font-medium leading-relaxed">声绘未来 & 湃启科技联合创始人。智能语音博士，专注于情感陪伴产品。</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-20">
+                      {/* RT1 - Q1 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">01</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">Context Awareness（上下文感知）的定义与现状</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <QuoteBlock author="彭晗" role="模型侧" text="Context 是全模态能力的集合。虽然『百灵』已实现 Any-to-Any 互转，但初创团队应反思：Omni 模型是否是所有开发者的刚需？还是更倾向低成本的本地化 ASR/TTS 方案？" />
+                          <QuoteBlock author="张乾泽" role="平台侧" text="Context 就像处理多种采集信息（视觉、声纹）的『小黑板』。虽然端端是趋势，但其『黑盒』属性导致可控性差，工业界目前仍倾向于分段架构以保证生成结果的可靠性。" />
+                          <QuoteBlock author="孙思宁" role="应用侧" text="现阶段 AI 产品是『模型拉着工程补丁跑』。模型存在幸存者偏差（数据不均衡），『模态间并行、模态内串行』可能优于单纯的串行 Sequence-to-Sequence 结构。" />
+                        </div>
+                      </div>
+
+                      {/* RT1 - Q2 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">02</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">工程架构的创新：多 Agent 协作</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <QuoteBlock author="张乾泽" role="Agora" text="为解决任务时长与实时反馈的矛盾，应采用多 Agent 协作：『沟通 Agent』维持用户状态，『执行 Agent』处理后台任务，二者共享上下文以提升用户体验。" />
+                          <QuoteBlock author="孙思宁" role="湃启科技" text="通用 Agent 在特定场景下深度不足，警惕『用高射炮打鸟』。同时获取全量 Context 面临用户隐私顾虑下的数据采集难和有效信息提取难的两重挑战。" />
+                        </div>
+                      </div>
+
+                      {/* RT1 - Q3 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">03</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">视觉与语音融合中存在的「坑」与挑战</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <QuoteBlock author="彭晗" role="技术底层" text="最大的难点在于『模态间的对齐』。不同模态序列长度差异巨大，工程复杂度极高。建议开发者在 Agent 层利用基座模型的能力边界快速跳坑试错 (Fail fast)。" />
+                          <QuoteBlock author="张乾泽" role="感知能力" text="目前的视觉感知实际上是『信息降级』。AI 看到的并非流畅连贯的世界，这种感知断层导致目前的 Demo 效果与真实体验存在巨大鸿沟。" />
+                          <QuoteBlock author="孙思宁" role="产品体验" text="最大的坑是『用户预期错位』。自媒体拔高了期望，但 AI 在长尾细节上（如跌倒误报、叹气声识别）表现不佳，而这些细节才是留存的关键。" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Round Table 02 */}
+                  <div>
+                    <div className="mb-12 p-10 bg-zinc-900 rounded-[3rem] text-white">
+                      <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mb-10">
+                        <div className="max-w-xl">
+                          <h4 className="text-3xl font-black mb-4 leading-none italic">圆桌二：Context-Product Fit</h4>
+                          <p className="text-zinc-500 text-lg font-medium">寻找多模态交互的真实场景</p>
+                        </div>
+                        <div className="bg-zinc-800 p-6 rounded-2xl border border-zinc-700 shadow-lg min-w-[280px]">
+                          <p className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] mb-2">Moderator / 主持人</p>
+                          <p className="text-lg font-black text-white">傅丰元</p>
+                          <p className="text-xs text-zinc-400 font-medium leading-relaxed mt-1">RTE 开发者社区负责人。长期关注 AI 硬件交互与社区建设。</p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div className="bg-zinc-800 p-6 rounded-2xl border border-zinc-700">
+                          <p className="text-base font-black text-white mb-1">吴晓凡</p>
+                          <p className="text-[10px] text-zinc-500 uppercase">Chance AI CTO</p>
+                        </div>
+                        <div className="bg-zinc-800 p-6 rounded-2xl border border-zinc-700">
+                          <p className="text-base font-black text-white mb-1">杨天翼</p>
+                          <p className="text-[10px] text-zinc-500 uppercase">Rokid AI 产品经理</p>
+                        </div>
+                        <div className="bg-zinc-800 p-6 rounded-2xl border border-zinc-100/10">
+                          <p className="text-base font-black text-white mb-1">Panda</p>
+                          <p className="text-[10px] text-zinc-500 uppercase">Cerul.ai Founder</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-20">
+                      {/* RT2 - Q1 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">01</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">Context-Product Fit：真实场景的意外与失败</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <QuoteBlock author="吴晓凡" role="Chance AI" text="意外发现『收藏类识别』（如球星卡）是刚需。失败经验是精心设计的『艺术品鉴赏』几乎无人问津，产品必须深入长尾场景而非满足创始人小众爱好。" />
+                          <QuoteBlock author="杨天翼" role="Rokid" text="用户创造力惊人：如利用眼镜记录『日结收入』，甚至开发长逻辑指令（如看到卷子给答案）。这些碎片化个性场景才是真实的 Context 需求。" />
+                          <QuoteBlock author="Panda" role="Cerul.ai" text="很多用户在利用多模态能力分析美联储主席说话的瞬间信息来辅助量化交易。这种在专业、瞬间决策场景的应用超出了最初的设计预期。" />
+                        </div>
+                      </div>
+
+                      {/* RT2 - Q2 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">02</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">交互演进：是否该「干掉文本输入框」？</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <QuoteBlock author="吴晓凡" role="激进派" text="坚持去除。打字是工业时代的妥协，是低效且反直觉的。AI 时代应回归更本原的视觉与语音交互。" />
+                          <QuoteBlock author="杨天翼" role="语音派" text="语音是唯一符合认知惯性的方式。虽然用户会因习惯要求保留文本框，但从 AR/XR 设备属性看，语音的主导地位是必然的。" />
+                          <QuoteBlock author="Panda" role="中立派" text="虽然支持多模态，但个人由于『i人』性格仍倾向打字。脑机接口才是终极的交互方案。" />
+                        </div>
+                      </div>
+
+                      {/* RT2 - Q3 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">03</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">软硬件生态的「互相繁衍」</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <QuoteBlock author="杨天翼" role="Rokid" text="坚持平台策略。Rokid 提供 API 让开发者自主连接第三方模型（如 OpenClaw），实现『生活轨迹记录』等高度个性化的智能体功能。" />
+                          <QuoteBlock author="吴晓凡" role="Chance AI" text="坚持先做『大脑』（算法）。目前硬件渠道未发生颠覆，AI 竞争的核心是『开放性』，即如何让 Context 在各种场景间更高效地流转。" />
+                        </div>
+                      </div>
+
+                      {/* RT2 - Q4 */}
+                      <div className="space-y-8">
+                        <div className="flex items-start gap-4">
+                          <span className="text-5xl font-black text-zinc-100 leading-none">04</span>
+                          <h5 className="text-xl font-bold text-zinc-900 pt-2 leading-tight">AI 时代人才观与心法</h5>
+                        </div>
+                        <div className="grid grid-cols-1 gap-6 pl-12">
+                          <div className="bg-zinc-50 p-10 rounded-[2.5rem] border border-zinc-100">
+                             <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                                <div className="space-y-3">
+                                  <p className="text-sm font-black text-zinc-400 uppercase tracking-widest leading-none">实战派 (Panda)</p>
+                                  <p className="text-sm text-zinc-600 leading-relaxed font-bold">面试不看八股文，给半小时让候选人利用一切 AI 工具解决一个陌生问题。看重实战解决能力。</p>
+                                </div>
+                                <div className="space-y-3">
+                                  <p className="text-sm font-black text-zinc-400 uppercase tracking-widest leading-none">交付派 (吴晓凡)</p>
+                                  <p className="text-sm text-zinc-600 leading-relaxed font-bold">看重端到端交付能力与性格契合度。通过一周『日结试工』考察候选人的自驱力和团队适应性。</p>
+                                </div>
+                                <div className="space-y-3">
+                                  <p className="text-sm font-black text-zinc-400 uppercase tracking-widest leading-none">价值派 (杨天翼)</p>
+                                  <p className="text-sm text-zinc-600 leading-relaxed font-bold">在知识获取成本极低的时代，能看清行业方向、判断什么才有真正价值的人才最稀缺。</p>
+                                </div>
+                             </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </motion.div>
+          ) : activeTab === 'beijing-2026' ? (
             <motion.div
               key="beijing-content"
               initial={{ opacity: 0, y: 20 }}
